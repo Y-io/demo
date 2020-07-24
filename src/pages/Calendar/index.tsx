@@ -1,6 +1,10 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import moment from 'moment';
 import _ from 'lodash';
+
+import { useDrag } from 'react-use-gesture';
+import { useSpring, animated } from 'react-spring';
+
 import styles from './style.module.scss';
 import { weeks, days } from './constants';
 
@@ -19,7 +23,6 @@ if (monthFirstDayToWeek !== '0') {
   // 如果当月第一天不是周日
   monthDayArr = Array.from({ length: _.toNumber(monthFirstDayToWeek) }, (v, k) => 30 - k).sort();
 }
-
 monthDayArr = [...monthDayArr, ...days];
 if (monthLastDayToWeek !== '6') {
   // 如果当月最后一天不是周六
@@ -30,15 +33,30 @@ if (monthLastDayToWeek !== '6') {
 }
 
 export default function Calendar() {
-  console.log({
-    monthDayArr,
-    月: month,
-    天数: monthDays,
-    第一天: monthFirstDay,
-    最后一天: monthLastDayToWeek,
-    当月第一天星期: monthFirstDayToWeek,
-    上个月最后一天: lastMonthDays.toObject().date,
-  });
+  // console.log({
+  //   monthDayArr,
+  //   月: month,
+  //   天数: monthDays,
+  //   第一天: monthFirstDay,
+  //   最后一天: monthLastDayToWeek,
+  //   当月第一天星期: monthFirstDayToWeek,
+  //   上个月最后一天: lastMonthDays.toObject().date,
+  // });
+
+  const [{ y }, set] = useSpring(() => ({ y: 0 }));
+
+  const dragBind = useDrag(
+    (state) => {
+      const { down, offset } = state;
+      console.log(offset[1]);
+
+      const y = offset[1] < -50 ? -160 : 0;
+
+      set({ y: down ? offset[1] : y });
+    },
+    { axis: 'y' }
+  );
+
   return (
     <div className={styles.Calendar}>
       <div className={styles.head}>
@@ -57,6 +75,11 @@ export default function Calendar() {
           ))}
         </div>
       </div>
+      <animated.div
+        {...dragBind()}
+        className={styles.drag}
+        style={{ transform: y.interpolate((y) => `translateY(${y}px)`) }}
+      />
     </div>
   );
 }
