@@ -11,7 +11,6 @@ export const SelectPage: React.FC = () => {
   return (
     <div style={{ margin: 'auto' }}>
       <Select data={SelectData} onChange={(v, i) => console.log({ v, i })} />
-      选择器
     </div>
   );
 };
