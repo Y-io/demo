@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { useDrag } from 'react-use-gesture';
-import { useSpring, animated } from 'react-spring';
+import { useGesture } from 'react-use-gesture';
+import { useSpring, animated, interpolate } from 'react-spring';
 
 import styles from './style.module.scss';
 import { weeks, days } from './constants';
@@ -32,6 +32,11 @@ if (monthLastDayToWeek !== '6') {
   ];
 }
 
+enum minRefType {
+  MIN = 'MIN',
+  MAX = 'MAX',
+}
+
 export default function Calendar() {
   // console.log({
   //   monthDayArr,
@@ -43,18 +48,49 @@ export default function Calendar() {
   //   上个月最后一天: lastMonthDays.toObject().date,
   // });
 
-  const [{ y }, set] = useSpring(() => ({ y: 0 }));
+  const minRef = useRef<minRefType>(minRefType.MIN);
 
-  const dragBind = useDrag(
-    (state) => {
-      const { down, offset } = state;
-      console.log(offset[1]);
+  const [isMin, setIsMin] = useState(false);
 
-      const y = offset[1] < -50 ? -160 : 0;
+  const [{ y, h }, set] = useSpring(() => ({ y: 40, h: 40 }));
 
-      set({ y: down ? offset[1] : y });
+  const dragBind = useGesture(
+    {
+      onDrag: (state) => {
+        // console.log({ state });
+        const {
+          down,
+          delta: [, deltaY],
+          initial: [, initialY],
+          movement: [, movementY],
+          direction: [, directionY],
+          offset: [, offsetY],
+          lastOffset: [, lastOffsetY],
+        } = state;
+
+        let _h = h.getValue();
+        // console.log({ 首个: _h, getValue: h.getValue() });
+        if (!down) {
+          console.log('抬起');
+          if (_h > 60) {
+            _h = 200;
+            minRef.current = minRefType.MAX;
+            set({ h: _h, config: { duration: 300 } });
+          } else {
+            _h = 40;
+            minRef.current = minRefType.MIN;
+            set({ h: _h, config: { duration: 300 } });
+          }
+        } else {
+          // const a = directionY >= 0 ? -movementY : movementY;
+          console.log({ 前: _h });
+          _h = initialY + offsetY - lastOffsetY - 70;
+          console.log({ _h, offsetY, directionY, movementY, lastOffsetY });
+          set({ h: _h, config: { duration: 0 } });
+        }
+      },
     },
-    { axis: 'y' }
+    { drag: { axis: 'y' } }
   );
 
   return (
@@ -66,7 +102,7 @@ export default function Calendar() {
           </div>
         ))}
       </div>
-      <div className={styles.content}>
+      <animated.div className={styles.content} style={{ height: h.interpolate((h) => h) }}>
         <div className={styles.days}>
           {monthDayArr.map((day, i) => (
             <div key={i} className={styles.day}>
@@ -74,12 +110,14 @@ export default function Calendar() {
             </div>
           ))}
         </div>
-      </div>
-      <animated.div
-        {...dragBind()}
-        className={styles.drag}
-        style={{ transform: y.interpolate((y) => `translateY(${y}px)`) }}
-      />
+        <animated.div
+          {...dragBind()}
+          className={styles.drag}
+          // style={{
+          //   transform: y.interpolate((y) => `translateY(${y}px)`),
+          // }}
+        />
+      </animated.div>
     </div>
   );
 }

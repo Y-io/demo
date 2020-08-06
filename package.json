@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "ahooks": "^2.4.0",
     "classnames": "^2.2.6",
+    "framer": "^1.2.5",
+    "framer-motion": "^2.1.2",
     "lodash": "^4.17.19",
     "moment": "^2.27.0",
     "react": "^16.13.1",
