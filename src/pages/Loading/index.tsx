@@ -4,7 +4,7 @@ import { Loading } from 'src/components';
 
 export const LoadingPage: React.FC = () => {
   return (
-    <div style={{ margin: 'auto' }}>
+    <div style={{ margin: 'auto', backgroundColor: '#999999' }}>
       <Loading />
     </div>
   );

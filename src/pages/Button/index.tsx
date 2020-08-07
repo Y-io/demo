@@ -7,7 +7,9 @@ export const ButtonPage: React.FC = () => {
     <div style={{ margin: 'auto' }}>
       <button onClick={() => setLoading(true)}>start loading</button>
       <button onClick={() => setLoading(false)}>stop loading</button>
-      <Button loading={loading}>提交</Button>
+      <Button loading={loading} disabled>
+        提交
+      </Button>
     </div>
   );
 };

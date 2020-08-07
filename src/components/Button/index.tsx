@@ -15,8 +15,18 @@ export type ButtonProps = {
   disabled?: boolean;
   children?: React.ReactNode;
   loading?: boolean;
+  style?: React.CSSProperties;
+  className?: string;
+  onClick?: () => void;
 };
-export const Button: React.FC<ButtonProps> = ({ disabled = false, children, loading = true }) => {
+export const Button: React.FC<ButtonProps> = ({
+  disabled = false,
+  children,
+  loading = false,
+  style = {},
+  className = '',
+  onClick,
+}) => {
   const contentMotion = { show: { opacity: 1, y: 0 }, hide: { opacity: 0, y: 32 } };
   const loadingMotion = {
     show: { opacity: 1, y: '-50%', x: '-50%' },
@@ -25,8 +35,10 @@ export const Button: React.FC<ButtonProps> = ({ disabled = false, children, load
 
   return (
     <button
+      onClick={onClick}
+      style={style}
       data-loading={loading}
-      className={classNames(styles.Button, { [styles.Button_loading]: loading })}
+      className={classNames(styles.Button, { [styles.Button_loading]: loading }, className)}
       disabled={loading || disabled}
     >
       <AnimatePresence initial={false}>

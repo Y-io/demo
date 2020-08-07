@@ -6,6 +6,7 @@ import Select from 'src/pages/Select';
 import Switch from 'src/pages/Switch';
 import Button from 'src/pages/Button';
 import Loading from 'src/pages/Loading';
+import Pagination from 'src/pages/Pagination';
 
 export default function Layout() {
   const navs = [
@@ -14,6 +15,7 @@ export default function Layout() {
     { name: 'Switch', path: '/switch' },
     { name: 'Button', path: '/button' },
     { name: 'Loading', path: '/loading' },
+    { name: 'Pagination', path: '/pagination' },
   ];
   return (
     <BrowserRouter>
@@ -31,6 +33,7 @@ export default function Layout() {
           <Route path='/switch' component={Switch} />
           <Route path='/button' component={Button} />
           <Route path='/loading' component={Loading} />
+          <Route path='/pagination' component={Pagination} />
         </SwitchRouter>
       </div>
     </BrowserRouter>

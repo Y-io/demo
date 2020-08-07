@@ -1,0 +1,38 @@
+:global {
+  .Pagination {
+    display: flex;
+    align-items: center;
+    .rc-pagination-prev,
+    .rc-pagination-next,
+    .rc-pagination-item,
+    .rc-pagination-jump-next {
+      cursor: pointer;
+      min-width: 32px;
+      height: 32px;
+      margin-right: 8px;
+      border-radius: 2px;
+      box-sizing: border-box;
+    }
+    .rc-pagination-item {
+      border: 1px solid #999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .rc-pagination-item-active {
+      background-color: #999999;
+      color: #ffffff;
+    }
+  }
+}
+
+.Item {
+  cursor: pointer;
+  min-width: 32px;
+  height: 32px;
+  margin-right: 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  line-height: 32px;
+  text-align: center;
+}
