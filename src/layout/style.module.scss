@@ -4,8 +4,10 @@
   flex-shrink: 0;
   border-bottom: 1px solid #000;
   display: flex;
+  overflow-x: auto;
   a {
-    // display: block;
+    flex: 1;
+    display: block;
     height: 50px;
     line-height: 50px;
     text-decoration: none;

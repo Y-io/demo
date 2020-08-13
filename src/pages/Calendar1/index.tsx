@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 import _ from 'lodash';
-import { motion, DragHandlers, PanInfo } from 'framer-motion';
+import { Override, Data } from 'framer';
+import { motion, DragHandlers, PanInfo, useCycle, useAnimation } from 'framer-motion';
 
 import styles from './style.module.scss';
 import { weeks, days } from './constants';
+import { useUpdateEffect } from 'ahooks';
 
 // const month = moment().month() + 1; // 当前月份
 // const monthDays = moment().daysInMonth(); // 当前月天数
@@ -30,39 +32,26 @@ if (monthLastDayToWeek !== '6') {
   ];
 }
 
-// enum minRefType {
-//   MIN = 'MIN',
-//   MAX = 'MAX',
-// }
-
 export default function Calendar() {
-  // console.log({
-  //   monthDayArr,
-  //   月: month,
-  //   天数: monthDays,
-  //   第一天: monthFirstDay,
-  //   最后一天: monthLastDayToWeek,
-  //   当月第一天星期: monthFirstDayToWeek,
-  //   上个月最后一天: lastMonthDays.toObject().date,
-  // });
-
-  // const minRef = useRef<minRefType>(minRefType.MIN);
-
   const [isMin, setIsMin] = useState(false);
   const [h, setH] = useState(40);
-
+  const data = Data({ isActive: false });
   const onDrag = (e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     // console.log(info);
   };
   const onDragEnd = (e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    console.log(info);
-    const { offset } = info;
-    if (offset.y <= -120) {
-      console.log('小雨');
+    const { point } = info;
+    if (point.y >= 200) {
+      controls.start('hidden');
+    } else {
+      controls.start('visible');
     }
-    setIsMin(offset.y <= -120);
   };
-
+  useUpdateEffect(() => {
+    console.log('useUpdateEffect');
+  }, [isMin]);
+  console.log(data.isActive);
+  const controls = useAnimation();
   return (
     <div className={styles.Calendar}>
       <div className={styles.head}>
@@ -72,7 +61,23 @@ export default function Calendar() {
           </div>
         ))}
       </div>
-      <motion.div className={styles.content} style={{ height: h }}>
+      <motion.div
+        drag='y'
+        onDragEnd={onDragEnd}
+        // className={styles.drag}
+        className={styles.content}
+        initial='hidden'
+        animate={controls}
+        variants={{
+          visible: { y: -160 },
+          hidden: { y: 0 },
+        }}
+        dragConstraints={{ top: 0, bottom: 0 }}
+        transition={{
+          y: { type: 'spring', stiffness: 300, damping: 200 },
+          opacity: { duration: 0.2 },
+        }}
+      >
         <div className={styles.days}>
           {monthDayArr.map((day, i) => (
             <div key={i} className={styles.day}>
@@ -80,22 +85,6 @@ export default function Calendar() {
             </div>
           ))}
         </div>
-        <motion.div
-          drag='y'
-          onDrag={onDrag}
-          onDragEnd={onDragEnd}
-          className={styles.drag}
-          dragConstraints={{ top: -160, bottom: 0 }}
-          transition={{
-            y: { type: 'spring', stiffness: 300, damping: 200 },
-            opacity: { duration: 0.2 },
-          }}
-          dragElastic={1}
-          style={{ transform: `translateY(${isMin ? -160 : 0}px)` }}
-          // style={{
-          //   transform: y.interpolate((y) => `translateY(${y}px)`),
-          // }}
-        />
       </motion.div>
     </div>
   );

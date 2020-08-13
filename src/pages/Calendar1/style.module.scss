@@ -21,10 +21,11 @@
   }
   .content {
     position: relative;
-    overflow: hidden;
+    // overflow: hidden;
     padding-bottom: 30px;
     // flex: 1;
     height: 200px;
+    overflow: hidden;
     .days {
       width: 100%;
       height: 100%;
