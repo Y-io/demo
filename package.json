@@ -8,7 +8,7 @@
     "classnames": "^2.2.6",
     "framer": "^1.2.5",
     "framer-motion": "^2.1.2",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "lottie-web": "^5.7.1",
     "moment": "^2.27.0",
     "rc-pagination": "^3.0.3",
